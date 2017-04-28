@@ -16,6 +16,26 @@ public class Main {
         return true;
     }
 
+    public ListenElement diffList(ListenElement liste1, ListenElement liste2){
+        boolean run = true;
+
+        while(run){
+            if(liste1 == null){
+                run = false;
+            }
+
+            if(isIn(liste1, liste2) && run){
+                liste2 = delElement("a", liste1, liste2);
+            }
+
+            if(liste1 != null){
+                liste1 = liste1.getNext();
+            }
+        }
+
+        return liste2;
+    }
+
 
     /**
      *
@@ -25,6 +45,32 @@ public class Main {
      */
     public boolean suffix(ListenElement i, ListenElement l){
         boolean success = false;
+        boolean run = true;
+        ListenElement ibackup = i;
+        ListenElement lbackup = l;
+
+        while(!success){
+            if(i.getData().equals(l.getData())){
+                ListenElement nextInnerELementI = i.getNext();
+                ListenElement nextInnerElementL = l.getNext();
+
+                while(run){
+                    if(nextInnerELementI == null && nextInnerElementL == null){
+                        run = false;
+                        success = true;
+                    }
+
+                    if(nextInnerELementI.getData().equals(nextInnerElementL.getData()) && run){
+                        nextInnerELementI = nextInnerElementL.getNext();
+                        nextInnerElementL = nextInnerElementL.getNext();
+                    } else {
+                        run = false;
+                    }
+                }
+            }
+
+            l = l.getNext();
+        }
 
         return success;
     }
@@ -56,7 +102,7 @@ public class Main {
                            success = true;
                        }
 
-                       if(nextInnerElementI.getData().equals(nextInnerElementL.getData())){
+                       if(nextInnerElementI.getData().equals(nextInnerElementL.getData()) && run){
                            nextInnerElementI = nextInnerElementI.getNext();
                            nextInnerElementL = nextInnerElementL.getNext();
                        } else {
@@ -108,6 +154,8 @@ public class Main {
         return  success;
     }
 
+
+
     /**
      *
      * @param p
@@ -143,40 +191,116 @@ public class Main {
         return returnList;
     }
 
-    private ListenElement delE(ListenElement e, ListenElement l){
+    private ListenElement delE(ListenElement e, ListenElement returnList){
         boolean run = true;
-        ListenElement returnList = null;
 
-        // Spezialfall, wenn das Element e direkt dem ersten Element aus l entspricht.
-        if(e.getData().equals(l.getData())){
-            returnList = l.getNext();
+        // Spezialfall, falls das Element e direkt dem ersten Element aus returnList entspricht.
+        if(e.getData().equals(returnList.getData())){
+            returnList = returnList.getNext();
             run = false;
         }
 
-        ListenElement nextElementL = l.getNext();
-        ListenElement savePrevious = l;
-
         while(run){
-            if(e.getData().equals(nextElementL.getData())){
+            // Durch die Struktur der einmal verketteten Liste ist es nötig das vorangegangene Element
+            // zwischen zu speichern, da es sonst nicht möglich ist das überprüfte Element zu löschen
+            // und die Liste wieder zusammenzufügen.
+            ListenElement nextElementL = returnList.getNext();
+            ListenElement savePrevious = returnList;
 
+            if(nextElementL == null){
+                run = false;
+            } else {
+                if(e.getData().equals(nextElementL.getData())){
+                    deleteSuccessor(savePrevious);
+                    run = false;
+                }
             }
         }
 
         return returnList;
     }
 
-    private ListenElement delL(ListenElement e, ListenElement l){
-        ListenElement returnList = new ListenElement();
+    private ListenElement delL(ListenElement e, ListenElement returnList){
+        boolean run = true;
+
+        // Spezialfall, Element e ist gleich dem ersten Element von returnList
+        // und e kommt nicht weiter in returnList vor.
+        if(e.getData().equals(returnList.getData()) && !isIn(e, returnList)){
+            returnList = returnList.getNext();
+            run = false;
+        }
+
+        while(run){
+            ListenElement nextElementL = returnList.getNext();
+            ListenElement savePrevious = returnList;
+
+            if(nextElementL == null){
+                run = false;
+            } else {
+                if(e.getData().equals(nextElementL.getData()) && !isIn(e, returnList)){
+                    deleteSuccessor(savePrevious);
+                    run = false;
+                }
+            }
+        }
 
         return returnList;
     }
 
-    private ListenElement delA(ListenElement e, ListenElement l){
-        ListenElement returnList = new ListenElement();
+    private ListenElement delA(ListenElement e, ListenElement returnList){
+        boolean run = true;
+
+        if(e.getData().equals(returnList.getData())){
+            returnList = returnList.getNext();
+        }
+
+        while(run){
+            ListenElement nextElementL = returnList.getNext();
+            ListenElement savePrevious = returnList;
+
+            if(nextElementL == null){
+                run = false;
+            } else {
+                if(e.getData().equals(nextElementL.getData())){
+                    deleteSuccessor(savePrevious);
+                }
+            }
+        }
 
         return returnList;
     }
 
+
+    public ListenElement substitute(String p, ListenElement e1, ListenElement e2, ListenElement returnList){
+        if(p.equals("e")){
+            returnList = substituteE(e1, e2, returnList);
+        } else if(p.equals("l")) {
+            returnList = substituteL(e1, e2, returnList);
+        } else if(p.equals("a")) {
+            returnList = substituteA(e1, e2, returnList);
+        } else {
+            throw new IllegalArgumentException("p hat einen falschen Wert erhalten");
+        }
+
+        return returnList;
+    }
+
+    public ListenElement substituteE(ListenElement e1, ListenElement e2, ListenElement returnList){
+
+    }
+
+    public ListenElement substituteL(ListenElement e1, ListenElement e2, ListenElement returnList){
+
+    }
+
+    public ListenElement substituteA(ListenElement e1, ListenElement e2, ListenElement returnList){
+        boolean run = true;
+
+        // Spezialfall
+        if(returnList.getData().equals(e1.getData())){
+            e2.setNext(returnList);
+        }
+    }
 
     /**
      *
