@@ -1,5 +1,7 @@
 package de.max.chris;
 
+import java.lang.annotation.ElementType;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -254,9 +256,14 @@ public class Main {
             returnList = returnList.getNext();
         }
 
+
+        // Fehler
+        ListenElement nextElementL = returnList.getNext();
+        ListenElement savePrevious = returnList;
+
         while(run){
-            ListenElement nextElementL = returnList.getNext();
-            ListenElement savePrevious = returnList;
+            nextElementL = nextElementL.getNext();
+            savePrevious = nextElementL;
 
             if(nextElementL == null){
                 run = false;
@@ -294,12 +301,37 @@ public class Main {
     }
 
     public ListenElement substituteA(ListenElement e1, ListenElement e2, ListenElement returnList){
+        // Fehler
+
         boolean run = true;
 
-        // Spezialfall
+        // Spezialfall falls das erste Element direkt getauscht werden muss
         if(returnList.getData().equals(e1.getData())){
             e2.setNext(returnList);
+            returnList = e2;
         }
+
+        if(!isIn(e2, returnList)){
+            run = false;
+        }
+
+        while(run){
+            ListenElement nextElement = returnList.getNext();
+            ListenElement savePrevious = returnList;
+
+            if(nextElement == null){
+                run = false;
+            }
+
+            if(nextElement.getData().equals(e1.getData()) && run){
+                changeElement(e2, savePrevious);
+                if(!isIn(e2, returnList)){
+                    run = false;
+                }
+            }
+        }
+
+        return returnList;
     }
 
     /**
@@ -350,5 +382,11 @@ public class Main {
         }
 
         return success;
+    }
+
+    private void changeElement(ListenElement e2, ListenElement prev){
+        ListenElement nextNextElement = prev.getNext().getNext();
+        prev.setNext(e2);
+        prev.getNext().setNext(nextNextElement);
     }
 }
