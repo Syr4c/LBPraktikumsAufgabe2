@@ -1,7 +1,5 @@
 package de.max.chris;
 
-import java.lang.annotation.ElementType;
-
 public class Main {
 
     public static void main(String[] args) {
@@ -25,11 +23,9 @@ public class Main {
             if(liste1 == null){
                 run = false;
             }
-
             if(isIn(liste1, liste2) && run){
                 liste2 = delElement("a", liste1, liste2);
             }
-
             if(liste1 != null){
                 liste1 = liste1.getNext();
             }
@@ -43,7 +39,8 @@ public class Main {
      *
      * @param i
      * @param l
-     * @return
+     * @return  Die Methode überprüft, ob eine übergebene Liste i dem Endteil der Liste l
+     *          entspricht.
      */
     public boolean suffix(ListenElement i, ListenElement l){
         boolean success = false;
@@ -61,7 +58,6 @@ public class Main {
                         run = false;
                         success = true;
                     }
-
                     if(nextInnerELementI.getData().equals(nextInnerElementL.getData()) && run){
                         nextInnerELementI = nextInnerElementL.getNext();
                         nextInnerElementL = nextInnerElementL.getNext();
@@ -193,6 +189,7 @@ public class Main {
         return returnList;
     }
 
+    // [fixed]
     private ListenElement delE(ListenElement e, ListenElement returnList){
         boolean run = true;
 
@@ -201,6 +198,8 @@ public class Main {
             returnList = returnList.getNext();
             run = false;
         }
+
+        ListenElement startReturnList = returnList;
 
         while(run){
             // Durch die Struktur der einmal verketteten Liste ist es nötig das vorangegangene Element
@@ -217,11 +216,14 @@ public class Main {
                     run = false;
                 }
             }
+
+            returnList = nextElementL;
         }
 
-        return returnList;
+        return startReturnList;
     }
 
+    // [fixed]
     private ListenElement delL(ListenElement e, ListenElement returnList){
         boolean run = true;
 
@@ -231,6 +233,8 @@ public class Main {
             returnList = returnList.getNext();
             run = false;
         }
+
+        ListenElement startReturnListe = returnList;
 
         while(run){
             ListenElement nextElementL = returnList.getNext();
@@ -244,6 +248,8 @@ public class Main {
                     run = false;
                 }
             }
+
+            returnList = nextElementL;
         }
 
         return returnList;
@@ -256,14 +262,11 @@ public class Main {
             returnList = returnList.getNext();
         }
 
-
-        // Fehler
-        ListenElement nextElementL = returnList.getNext();
-        ListenElement savePrevious = returnList;
+        ListenElement startReturnListe = returnList;
 
         while(run){
-            nextElementL = nextElementL.getNext();
-            savePrevious = nextElementL;
+            ListenElement nextElementL = returnList.getNext();
+            ListenElement savePrevious = nextElementL;
 
             if(nextElementL == null){
                 run = false;
@@ -272,9 +275,11 @@ public class Main {
                     deleteSuccessor(savePrevious);
                 }
             }
+
+            returnList = nextElementL;
         }
 
-        return returnList;
+        return startReturnListe;
     }
 
 
@@ -292,13 +297,67 @@ public class Main {
         return returnList;
     }
 
+    // [fixed]
     public ListenElement substituteE(ListenElement e1, ListenElement e2, ListenElement returnList){
+        boolean run = true;
 
+        if(e1.getData().equals(returnList.getData())){
+            e1.setNext(returnList.getNext());
+            run = false;
+        }
+
+        ListenElement startReturnList = returnList;
+
+        while(run){
+            ListenElement nextElement = returnList.getNext();
+            ListenElement savePrevious = returnList;
+
+            if(e1.getData().equals(nextElement.getData())){
+                changeElement(e2, savePrevious);
+
+                run = false;
+            }
+
+            if(!run){
+                returnList = nextElement;
+            }
+        }
+
+        return startReturnList;
     }
 
+    // [fixed]
     public ListenElement substituteL(ListenElement e1, ListenElement e2, ListenElement returnList){
+        boolean run = true;
 
+        //Spezialfall, falls das erste Element der Liste e1 entspricht und e1 in der restlichen Liste nicht mehr
+        //vorkommt
+        if(returnList.getData().equals(e1.getData()) && !isIn(e1, returnList)){
+            e2.setNext(returnList.getNext());
+            returnList = e2;
+
+            run = false;
+        }
+
+        ListenElement startReturnListe = returnList;
+
+        while(run){
+            ListenElement nextElement = returnList.getNext();
+            ListenElement savePrevious = returnList;
+
+            if(e1.getData().equals(nextElement.getData()) && !isIn(e2, nextElement)){
+                changeElement(e2, savePrevious);
+                run = false;
+            }
+
+            if(!run){
+                returnList = nextElement;
+            }
+        }
+
+        return startReturnListe;
     }
+
 
     public ListenElement substituteA(ListenElement e1, ListenElement e2, ListenElement returnList){
         // Fehler
