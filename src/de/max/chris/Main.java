@@ -1,10 +1,8 @@
 package de.max.chris;
 
+import java.util.ArrayList;
+
 public class Main {
-
-    public static void main(String[] args) {
-
-    }
 
     /**
      *
@@ -152,6 +150,45 @@ public class Main {
         return  success;
     }
 
+    public ArrayList<Integer> eoCount(ListenElement l){
+        boolean run = true;
+        ArrayList<Integer> returnList = new ArrayList<>();
+        returnList.add(0); //even
+        returnList.add(0); //odd
+        ListType aktuellerTyp = ListType.EVEN;
+
+        while(run){
+            ListenElement saveCurrent = l;
+            ListenElement nextElement = l.getNext();
+
+            if(nextElement == null){
+                run = false;
+            } else {
+                Object getData = nextElement.getData();
+                ListenElement dataCast = (ListenElement) getData;
+
+                if (isAList(dataCast)) {
+                    ArrayList<Integer> rekursionList = eoCount(nextElement);
+                    returnList.set(0, (returnList.get(0) + rekursionList.get(0)));
+                    returnList.set(1, (returnList.get(1) + rekursionList.get(1)));
+                }
+
+                if (aktuellerTyp == ListType.EVEN) {
+                    aktuellerTyp = ListType.ODD;
+                } else {
+                    aktuellerTyp = ListType.EVEN;
+                }
+            }
+        }
+
+        if(aktuellerTyp == ListType.EVEN){
+            returnList.set(0,(returnList.get(0) + 1));
+        } else {
+            returnList.set(1,(returnList.get(1) + 1));
+        }
+
+        return returnList;
+    }
 
 
     /**
@@ -160,13 +197,12 @@ public class Main {
      * @param e
      * @param l
      * @return
-     *
-     * Precondition:
-    - Eine Liste, eine Position und ein Element wird übergeben. P bezeichnet die Position: e erstes, l letztes, a alle Vorkommen
-    Postcondition:
-    - Ein Element innerhalb der übergebenen Liste wurde an der übergebenen position/en gelöscht,
-    eventuell darauf folgende Elemente wurden richtig eingerückt, indem sie um einen Platz nach vorne verschoben worden
-    sind und die Liste wurde zurückgeliefert(R).
+     *      Precondition:
+     *      - Eine Liste, eine Position und ein Element wird übergeben. P bezeichnet die Position: e erstes, l letztes, a alle Vorkommen
+     *      Postcondition:
+     *      - Ein Element innerhalb der übergebenen Liste wurde an der übergebenen position/en gelöscht,
+     *      eventuell darauf folgende Elemente wurden richtig eingerückt, indem sie um einen Platz nach vorne verschoben worden
+     *      sind und die Liste wurde zurückgeliefert(R).
      *
      */
 
@@ -443,9 +479,20 @@ public class Main {
         return success;
     }
 
+    /**
+     *
+     * @param e2
+     * @param prev
+     *
+     *              Hilfsmethode um ein Element zu tauschen.
+     */
     private void changeElement(ListenElement e2, ListenElement prev){
         ListenElement nextNextElement = prev.getNext().getNext();
         prev.setNext(e2);
         prev.getNext().setNext(nextNextElement);
+    }
+
+    public static void main(String[] args) {
+        System.out.println("Hier kann dann alles ausgeführt werden!");
     }
 }
