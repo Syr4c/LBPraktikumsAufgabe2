@@ -18,18 +18,18 @@ public class Main {
         boolean run = true;
 
         while(run){
-            if(liste1 == null){
+            if(liste2 == null){
                 run = false;
             }
-            if(isIn(liste1, liste2) && run){
-                liste2 = delElement("a", liste1, liste2);
+            if(isIn(liste2, liste1) && run){
+                liste1 = delElement("a", liste2, liste1);
             }
-            if(liste1 != null){
-                liste1 = liste1.getNext();
+            if(liste2 != null){
+                liste2 = liste2.getNext();
             }
         }
 
-        return liste2;
+        return liste1;
     }
 
 
