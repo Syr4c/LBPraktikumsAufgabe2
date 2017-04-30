@@ -339,6 +339,7 @@ public class Main {
 
         if(e1.getData().equals(returnList.getData())){
             e1.setNext(returnList.getNext());
+            returnList = e1;
             run = false;
         }
 
