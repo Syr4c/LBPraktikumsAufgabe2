@@ -4,18 +4,20 @@ import java.util.ArrayList;
 
 public class Main {
 
-
+    /**
+     *
+     * @param l
+     * @return  Gibt immer true zurueck sobald die Methode aufgerufen wird.
+     *          Wurde die Methode erfolgreich aufgerufen, muss es eine Liste sein.
+     */
     public boolean isAList(ListenElement l){
       boolean run = true;
 
-      // Sonderfall wird überprüft, ob die übergebene 'Liste' direkt eine leere List ist.
-      // Sollte dies der Fall sein, gibt die Methode true zurück.
       if(l == null){
         run = false;
       }
 
-      // Die Schleife durchläuft alle weitere Elemente der Liste, sobald die leere Liste (null)
-      // aufgerufen wird, gibt die Methode true zurück-
+
       while(run){
         ListenElement lnext = l.getNext();
         if(lnext == null){
@@ -29,23 +31,13 @@ public class Main {
     public ListenElement diffList(ListenElement liste1, ListenElement liste2){
         boolean run = true;
 
-        // Die Methode durchläuft alle Elemente der übergebene Liste.
         while(run){
-            // Wenn das Ende der Liste erreicht ist, bricht die Schleife am Ende ab
-            // und gibt die Ergebnisliste zurück.
             if(liste2 == null){
                 run = false;
             }
-
-            // Es wird überprüft, ob das zu überprüfende Element aus der 2. Liste (L2)
-            // in 1. Liste (L1) vorkommt. Wenn das so ist, wird das Element aus der 1.
-            // Liste gelöscht.
             if(isIn(liste2, liste1) && run){
                 liste1 = delElement("a", liste2, liste1);
             }
-
-            // Es wird der Pointer auf das nächste ListenElement gesetzt und die Schleife
-            // wiederholt sich.
             if(liste2 != null){
                 liste2 = liste2.getNext();
             }
@@ -54,87 +46,73 @@ public class Main {
         return liste1;
     }
 
-    // WICHTIG WICHTIG WICHTIG WICHTIG WICHTIG WICHTIG WICHTIG
-    public boolean suffix(ListenElement s, ListenElement l){
+
+    /**
+     *
+     * @param i
+     * @param l
+     * @return  Die Methode überprüft, ob eine übergebene Liste i dem Endteil der Liste l
+     *          entspricht.
+     */
+    public boolean suffix(ListenElement i, ListenElement l){
         boolean success = false;
         boolean run = true;
-        ListenElement sbackup = s;
+        ListenElement ibackup = i;
         ListenElement lbackup = l;
 
-        // Die Schleife iteriert über die übergebene Liste l.
-        // bei jedem Element von l wir überprüft, ob es dem ersten Element aus
-        // s entspricht.
         while(!success){
-            if(s.getData().equals(l.getData())){
-                ListenElement nextInnerELementS = s.getNext();
+            if(i.getData().equals(l.getData())){
+                ListenElement nextInnerELementI = i.getNext();
                 ListenElement nextInnerElementL = l.getNext();
 
-                // Sollte dieser Fall eintreten, springt die Methode in den inneren Schleifenblock
-                // und überprüft ab nun jedes folgenden Element von l mit jedem folgenden Element von s.
                 while(run){
-
-                    // sind alle Elemente 'gleich' und am Ende weisen beide Listen leere Listen (null) auf,
-                    // ist s ein suffix von l und die Methode gibt true zurück.
-                    if(nextInnerELementS == null && nextInnerElementL == null){
+                    if(nextInnerELementI == null && nextInnerElementL == null){
                         run = false;
                         success = true;
                     }
-
-                    // Sobald die beiden aktuell überprüften Elemente nicht mehr gleich sind, bricht die
-                    // innere Schleife ab, da s zumindest bis zu diesem Zeitpunkt kein suffix von l sein kann.
-                    if(nextInnerELementS.getData().equals(nextInnerElementL.getData()) && run){
-                        nextInnerELementS = nextInnerElementL.getNext();
+                    if(nextInnerELementI.getData().equals(nextInnerElementL.getData()) && run){
+                        nextInnerELementI = nextInnerElementL.getNext();
                         nextInnerElementL = nextInnerElementL.getNext();
                     } else {
                         run = false;
                     }
                 }
-
-                // Resett von s auf den Startzustand, setzen von l auf den Pointer der aktuell erreichten Position.
-                s = sbackup;
-                l = nextElementL;
             }
 
             l = l.getNext();
         }
 
-        // Die Methode gibt den Inhalt der Boolean Variable success zurück.
         return success;
     }
 
-
+    /**
+     *
+     * @param i
+     * @param l
+     * @return  Die Methode bekommt zwei Listenköpfe übergeben und soll überprüfen, ob die Liste
+     *          i ein Infix von der Liste l ist. Die tut sie, indem sie schrittweise die einzelnen
+     *          Elemente miteinander vergleicht. Sollte ein Element aus i gleich einem Element aus l
+     *          sein, wird nundann überprüft, ob die darauf folgenden Elemente in l gleich sind.
+     */
     public boolean infix(ListenElement i, ListenElement l){
         boolean run = true;
         boolean success = false;
 
         ListenElement nextElementI = i;
-        ListenElement backupi = i;
         ListenElement nextElementL = l;
 
-        // Die Schleife iteriert über die übergebene Liste l.
         while(!success){
-
-               // Sobald das aktuell überprüfte Element aus l gleich dem ersten Element aus
-               // s ist, überprüft die Methode alle weiteren aufeinander folgenden Element
-               // beider Listen, ob diese gleich sind.
                if(nextElementI.getData().equals(nextElementL.getData())){
                    ListenElement nextInnerElementI = nextElementI.getNext();
                    ListenElement nextInnerElementL = nextElementL.getNext();
 
                    while(run){
-
-                        // Sollte i am ende eine Leereliste (null)
-                        // enthalten und alle vorheriegen Elemente waren identisch
-                        // verlässt die Methode die Schleife und gibt true zurück, da i ein infix von l ist.
                        if(nextInnerElementI == null){
                            run = false;
                            success = true;
                        }
 
-                       // Die Elemente aus i und l werden miteinander verglichen.
                        if(nextInnerElementI.getData().equals(nextInnerElementL.getData()) && run){
-
-                            // Pointer auf die nächsten Elemente werden gesetzt.
                            nextInnerElementI = nextInnerElementI.getNext();
                            nextInnerElementL = nextInnerElementL.getNext();
                        } else {
@@ -143,10 +121,6 @@ public class Main {
                    }
                }
 
-               // Sollte i noch nicht am Ende sein, wird i resettet, so das bei dem
-               // nächsten durchlauf wieder das erste Element aus i mit dem aktuellen
-               // Element aus l verglichen werden kann.
-               i = backupi;
                nextElementL = nextElementL.getNext();
                run = true;
         }
@@ -154,29 +128,30 @@ public class Main {
         return success;
     }
 
+    /**
+     *
+     * @param p
+     * @param l
+     * @return  Die Methode bekommt zwei Listenköpfe mit den Parametern p, l übergeben. Sie soll prüfen, ob die
+     *          übergebene Liste p ein Präfix von l ist. Es wird zunächst überprüft, ob das erste Element gleich
+     *          ist. Ist das nicht so, gibt die Methode false zurück. Sollten die Elemente gleich sein, wird nun
+     *          jedes weitere Element aus beiden Listen verglichen, wenn alle gleich sind, wird true zurück gegeben,
+     *          ansonsten false.
+     */
     public boolean praefix(ListenElement p, ListenElement l){
         boolean run = true;
         boolean success = false;
 
-        // Es wird überprüft, ob das erste Element aus p gleich dem ersten Element aus l ist.
-        // Sollte dies der Fall sein, geht die Methode in die if Abfrage.
         if(p.getData().equals(l.getData())){
             ListenElement nextElementL = l.getNext();
             ListenElement nextElementP = p.getNext();
 
-            // Sollte das nächste Element der übergebenen p Liste null sein und alle davor gefolgenden
-            // Element waren identisch mit denen die in l überprüft wurden, gibt die Methode true
-            // zurück, da p ein Präfix von l ist.
             while(run){
                 if(nextElementP == null){
                     run = false;
                     success = true;
                 }
 
-                // Jedes aktuelle Element aus l und p werden miteinander verglichen, sind sie
-                // indentisch werden die Pointer auf die darauf folgenden Elemente gesetzt.
-                // Sollten sie nicht identisch sein, wird die Schleife abgebrochen und die
-                // Methode gibt false zurück, da p kein Präfix von l ist.
                 if(nextElementP.getData().equals(nextElementL.getData())){
                     nextElementL = nextElementL.getNext();
                     nextElementP = nextElementP.getNext();
@@ -189,7 +164,6 @@ public class Main {
         return  success;
     }
 
-
     public ArrayList<Integer> eoCount(ListenElement l){
         boolean run = true;
         ArrayList<Integer> returnList = new ArrayList<>();
@@ -197,31 +171,22 @@ public class Main {
         returnList.add(0); //odd
         ListType aktuellerTyp = ListType.EVEN;
 
-        // Die übergebene Liste wird Element für Element durchlaufen.
         while(run){
             ListenElement saveCurrent = l;
             ListenElement nextElement = l.getNext();
 
-            // Sollte das nächste Element vom aktuellen Element die leere Liste sein, wird die
-            // boolean Variable run auf null gesetzt und somit die Schleife abgebrochen, alle bisherigen
-            // Ergebnise werden zurück gegeben.
             if(nextElement == null){
                 run = false;
             } else {
-                // Es wird überprüft, ob das aktuelle Elemente eine Liste beinhaltet.
                 Object getData = nextElement.getData();
                 ListenElement dataCast = (ListenElement) getData;
 
-                // Sollte dies der Fall sein, wird die Methode eoCount rekursiv mit dem ausgelesenen
-                // ListenElement aufgerufen. Sobald die rekursive Methode eoCount das Ergebnis zurück
-                // gibt, wird es mit den bereits gesammelten Informationen addiert
                 if (isAList(dataCast)) {
                     ArrayList<Integer> rekursionList = eoCount(nextElement);
                     returnList.set(0, (returnList.get(0) + rekursionList.get(0)));
                     returnList.set(1, (returnList.get(1) + rekursionList.get(1)));
                 }
 
-                // Bei jedem Schleifendurchlauf wechselt der Typ der Liste von Even zu Odd
                 if (aktuellerTyp == ListType.EVEN) {
                     aktuellerTyp = ListType.ODD;
                 } else {
@@ -230,8 +195,6 @@ public class Main {
             }
         }
 
-        // Am Ende jeder Listen Iteration wird das jeweilige Ergbnis (ob eine überprüfte Liste gerade oder unngerade ist)
-        // ausgewertet und ein jeweiliger Wert addiert.
         if(aktuellerTyp == ListType.EVEN){
             returnList.set(0,(returnList.get(0) + 1));
         } else {
@@ -242,10 +205,21 @@ public class Main {
     }
 
 
-    // Die Methode entscheide je nach übergebener Position, welche Teilmethode aufgerufen wird.
-    // e steht für: das erste Vorkommen des übergebene Elementes wird gelöscht
-    // l steht für: das letzte Vorkommen des übergebene Elementes wird gelöscht
-    // a steht für: alle Vorkommen des übergebene Elementes werden gelöscht.
+    /**
+     *
+     * @param p
+     * @param e
+     * @param l
+     * @return
+     *      Precondition:
+     *      - Eine Liste, eine Position und ein Element wird übergeben. P bezeichnet die Position: e erstes, l letztes, a alle Vorkommen
+     *      Postcondition:
+     *      - Ein Element innerhalb der übergebenen Liste wurde an der übergebenen position/en gelöscht,
+     *      eventuell darauf folgende Elemente wurden richtig eingerückt, indem sie um einen Platz nach vorne verschoben worden
+     *      sind und die Liste wurde zurückgeliefert(R).
+     *
+     */
+
     public ListenElement delElement(String p, ListenElement e, ListenElement l){
         ListenElement returnList = null;
 
@@ -258,8 +232,6 @@ public class Main {
         } else if(p.equals("a")){
             returnList = delA(e, l);
 
-            // Sollte ein Wert übergeben werden, der nicht in der Menge der erlaubten Position liegt,
-            // wirft die Methode eine IllegalArgumentException.
         } else {
             throw new IllegalArgumentException("p hat einen falschen Wert.");
         }
@@ -267,7 +239,7 @@ public class Main {
         return returnList;
     }
 
-    
+    // [fixed]
     private ListenElement delE(ListenElement e, ListenElement returnList){
         boolean run = true;
 
