@@ -8,13 +8,16 @@ public class Main {
     public boolean isAList(ListenElement l){
       boolean success = false;
 
+      // Es wird überprüft, ob das nächste Element das Ende der Liste ist.
       if(l.getNext() != null){
+          // Rekursiver Aufruf mit dem nächsten Element.
           isAList(l.getNext());
       } else {
+          // Das Listen Ende ist erreicht, success wird auf true gesetzt
           success = true;
       }
 
-      return true;
+      return success;
     }
 
     public ListenElement diffList(ListenElement liste1, ListenElement liste2){
