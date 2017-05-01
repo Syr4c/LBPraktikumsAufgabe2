@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Main {
 
-
+    //[fixed #2]
     public boolean isAList(ListenElement l){
       boolean success = false;
 
@@ -183,7 +183,7 @@ public class Main {
         return  success;
     }
 
-
+    //[fixed #2]
     public ArrayList<Integer> eoCount(ListenElement l){
         boolean run = true;
         ArrayList<Integer> returnList = new ArrayList<>();
@@ -261,97 +261,71 @@ public class Main {
         return returnList;
     }
 
-    
+
+    // [fixed #2]
     private ListenElement delE(ListenElement e, ListenElement returnList){
-        boolean run = true;
+        boolean nextNull = false;
+        ListenElement nextList;
 
-        // Spezialfall, falls das Element e direkt dem ersten Element aus returnList entspricht.
-        if(e.getData().equals(returnList.getData())){
-            returnList = returnList.getNext();
-            run = false;
+        if(returnList == null){
+            nextNull = true;
         }
 
-        ListenElement startReturnList = returnList;
-
-        while(run){
-            // Durch die Struktur der einmal verketteten Liste ist es nötig das vorangegangene Element
-            // zwischen zu speichern, da es sonst nicht möglich ist das überprüfte Element zu löschen
-            // und die Liste wieder zusammenzufügen.
-            ListenElement nextElementL = returnList.getNext();
-            ListenElement savePrevious = returnList;
-
-            if(nextElementL == null){
-                run = false;
-            } else {
-                if(e.getData().equals(nextElementL.getData())){
-                    deleteSuccessor(savePrevious);
-                    run = false;
-                }
-            }
-
-            returnList = nextElementL;
+        // Sollte das gesuchte Element gleich dem aktuell überprüften Element sein,
+        // gibt die Methode den Pointer auf das nächste Element zurück, somit wird
+        // das gesuchte Objekt entfernt.
+        if(e.getData().equals(returnList.getData()) && !nextNull){
+            return returnList.getNext();
+        } else {
+            // Sollten die Elemente nicht identisch sein, wird rekursiv die Methode ein weiteres Mal aufgerufen.
+            nextList = delE(e, returnList.getNext());
         }
 
-        return startReturnList;
+        return append(returnList, nextList);
     }
 
-    // [fixed]
+    // [fixed 2]
     private ListenElement delL(ListenElement e, ListenElement returnList){
-        boolean run = true;
+        boolean nextNull = false;
+        ListenElement nextList;
 
-        // Spezialfall, Element e ist gleich dem ersten Element von returnList
-        // und e kommt nicht weiter in returnList vor.
-        if(e.getData().equals(returnList.getData()) && !isIn(e, returnList)){
-            returnList = returnList.getNext();
-            run = false;
+        if(returnList == null){
+            nextNull = true;
         }
 
-        ListenElement startReturnListe = returnList;
-
-        while(run){
-            ListenElement nextElementL = returnList.getNext();
-            ListenElement savePrevious = returnList;
-
-            if(nextElementL == null){
-                run = false;
-            } else {
-                if(e.getData().equals(nextElementL.getData()) && !isIn(e, returnList)){
-                    deleteSuccessor(savePrevious);
-                    run = false;
-                }
-            }
-
-            returnList = nextElementL;
+        // Sollte das gesuchte element gleich dem aktuell überprüften Element sein und das Element
+        // nicht weiter in dem Rest der Liste vorhanden sein, wird das Element gelöscht.
+        if(e.getData().equals(returnList.getData()) && !nextNull && !isIn(e, returnList)){
+            return returnList.getNext();
+        } else {
+            // Ansonsten wird rekursiv die gleiche Methode noch einmal aufgerufen.
+            nextList = delL(e, returnList.getNext());
         }
 
-        return returnList;
+        return append(returnList, nextList);
     }
 
+    // [fixed 2]
     private ListenElement delA(ListenElement e, ListenElement returnList){
-        boolean run = true;
+        boolean nextNull = false;
+        ListenElement nextList;
 
-        if(e.getData().equals(returnList.getData())){
-            returnList = returnList.getNext();
+        if(returnList == null){
+            nextNull = true;
         }
 
-        ListenElement startReturnListe = returnList;
-
-        while(run){
-            ListenElement nextElementL = returnList.getNext();
-            ListenElement savePrevious = nextElementL;
-
-            if(nextElementL == null){
-                run = false;
-            } else {
-                if(e.getData().equals(nextElementL.getData())){
-                    deleteSuccessor(savePrevious);
-                }
-            }
-
-            returnList = nextElementL;
+        // Sollte das aktuelle Element gleich dem gesuchten Element sein, wird die Methode
+        // delA erneut rekursiv aufgerufen.
+        if(e.getData().equals(returnList.getData()) && !nextNull){
+            return delA(e, returnList.getNext());
+        } else {
+            // Wenn der Fall eintritt, dass die Elemente nicht identisch sind, wird die Methode
+            // ebenfalls rekursiv erneut aufgerufen, jedoch wird die Rückgabe appended, somit wird
+            // kein Element gelöscht.
+            nextList = delA(e, returnList.getNext());
         }
 
-        return startReturnListe;
+        return append(returnList, nextList);
     }
 
 
@@ -469,7 +443,7 @@ public class Main {
     /**
      *
      * @param e
-     * @return  Helper-Methode zum Löschen des nächsten Elementes vom übergebeben Element. Liefer true zurück,
+     * @return  Helper-Methode zum Löschen des nächsten Elemcentes vom übergebeben Element. Liefer true zurück,
      *          wenn das Löschen erfolgreich war, ansonsten false. Sollte das Löschen nicht möglich sein, da
      *          z.B. das nächste Element von dem übergebenen Element null ist, wird false zurück gegeben und
      *          nichts verändern.
@@ -489,7 +463,7 @@ public class Main {
     }
 
 
-
+    //[fixed #2]
     private boolean isIn(ListenElement e, ListenElement l){
         boolean success = false;
         boolean nextNull = false;
@@ -506,6 +480,20 @@ public class Main {
         }
 
         return success;
+    }
+
+    //[fixed #2]
+    private ListenElement append(ListenElement e, ListenElement p){
+        //Es wird überprüft, ob das letzte Element von e erreicht wurde
+        //wenn das passiert ist, appended er p an e.
+        if(e.getNext() == null){
+            e.setNext(p);
+        } else {
+            //Ansonsten wird append rekursiv wieder aufgerufen.
+            append(e.getNext(), p);
+        }
+
+        return e;
     }
 
 
