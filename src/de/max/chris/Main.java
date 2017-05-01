@@ -6,21 +6,12 @@ public class Main {
 
 
     public boolean isAList(ListenElement l){
-      boolean run = true;
+      boolean success = false;
 
-      // Sonderfall wird überprüft, ob die übergebene 'Liste' direkt eine leere List ist.
-      // Sollte dies der Fall sein, gibt die Methode true zurück.
-      if(l == null){
-        run = false;
-      }
-
-      // Die Schleife durchläuft alle weitere Elemente der Liste, sobald die leere Liste (null)
-      // aufgerufen wird, gibt die Methode true zurück-
-      while(run){
-        ListenElement lnext = l.getNext();
-        if(lnext == null){
-          run = false;
-        }
+      if(l.getNext() != null){
+          isAList(l.getNext());
+      } else {
+          success = true;
       }
 
       return true;
@@ -242,7 +233,7 @@ public class Main {
     }
 
 
-    // Die Methode entscheide je nach übergebener Position, welche Teilmethode aufgerufen wird.
+    // Die Methode entscheidet je nach übergebener Position, welche Teilmethode aufgerufen wird.
     // e steht für: das erste Vorkommen des übergebene Elementes wird gelöscht
     // l steht für: das letzte Vorkommen des übergebene Elementes wird gelöscht
     // a steht für: alle Vorkommen des übergebene Elementes werden gelöscht.
