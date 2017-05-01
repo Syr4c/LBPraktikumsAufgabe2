@@ -489,40 +489,26 @@ public class Main {
     }
 
 
-    /**
-     *
-     * @param e
-     * @param l
-     * @return  Helper-Methode zum überprüfen, ob das übergebene Element e in der übergebenen Liste l vorkommt.
-     */
+
     private boolean isIn(ListenElement e, ListenElement l){
-        boolean run = true;
         boolean success = false;
+        boolean nextNull = false;
 
-        ListenElement nextElementL = l;
+        if(l.getNext() == null){ nextNull = true; }
 
-        while(run){
-            if(e.getData().equals(nextElementL.getData())){
-                success = true;
-                run = false;
-            } else {
-                nextElementL = nextElementL.getNext();
-                if(nextElementL == null){
-                    run = false;
-                }
-            }
+        // Überprüfung von Objektgleichheit, wenn Objekte gleich sind, wird true zurück
+        // gegeben.
+        if(e.getData().equals(l.getData()) && !nextNull){
+            success = true;
+        } else {
+            // Ansnonsten wird die Methode mit dem nächsten Element aus l aufgerufen.
+            isIn(e, l.getNext());
         }
 
         return success;
     }
 
-    /**
-     *
-     * @param e2
-     * @param prev
-     *
-     *              Hilfsmethode um ein Element zu tauschen.
-     */
+
     private void changeElement(ListenElement e2, ListenElement prev){
         ListenElement nextNextElement = prev.getNext().getNext();
         prev.setNext(e2);
