@@ -24,7 +24,7 @@ public class Main {
     public ListenElement diffList(ListenElement liste1, ListenElement liste2){
         boolean nextNull = false;
 
-        if(liste1 == null){
+        if(liste2 == null){
             nextNull = true;
         }
 
@@ -38,21 +38,67 @@ public class Main {
         return liste1;
     }
 
-
+    // [halb fixed #2 - Logik broken?]
     public boolean suffix(ListenElement s, ListenElement l){
+        boolean nextNull = false;
+        boolean subTree = false;
 
-    }
-
-    public boolean infix(ListenElement i, ListenElement l){
-
-    }
-
-    public boolean praefix(ListenElement p, ListenElement l){
-        if(p.getData().equals(l.getData())){
+        // Wenn beide Listen die leere Liste aufweisen und davor kein Abbruch des rekursiven Aufrufs statt gefunden hat
+        // ist s ein suffix von l
+        if(s == null && l == null){
             return true;
+        }
+
+        // Sobald das erste Element aus s, dem aktuellen Element aus l entspricht, wird die
+        // Methode rekursiv erneut aufgerufen. Allerdings diesmal mit dem Nachfolger von s und l.
+        if(l.getData().equals(s.getData())){
+            subTree = suffix(s.getNext(), l.getNext());
         } else {
+            // Sollte der Fall nicht eintreten, wird die Methode rekursiv mit dem Nachfolger von l aufgerufen
+            suffix(s, l.getNext());
+        }
+
+        // Sollte keiner der oberen Fälle eintreten, ist s kein Suffix von l.
+        return subTree;
+    }
+
+    // [halb fixed #2 - Logik broken?]
+    public boolean infix(ListenElement i, ListenElement l){
+        boolean nextNull = false;
+        boolean success = false;
+
+        if(i == null){
+            return true;
+        }
+
+        if(i.getData().equals(l.getData())){
+            success = infix(i.getNext(), l.getNext());
+        } else {
+            infix(i, l.getNext());
+        }
+
+        return success;
+    }
+
+    // [fixed #2]
+    public boolean praefix(ListenElement p, ListenElement l){
+        boolean nextNull = false;
+
+        // Sollte p als nächstes Element eine leere Liste enthalten, steigt die Methode aus
+        if(p == null){
+            nextNull = true;
+        }
+
+        // Sollte das erste Elemente aus p, gleich dem ersten Element aus l sein, ruft sich die Methode
+        // rekursiv wieder auf.
+        if(p.getData().equals(l.getData()) && !nextNull) {
+            praefix(p.getNext(), l.getNext());
+        } else {
+            // Sollte dieser Fall nicht eintreten, gibt die Methode false zurück, da p damit kein Präfix von l ist.
             return false;
         }
+
+        return true;
     }
 
     // [fixed #2]
@@ -280,7 +326,7 @@ public class Main {
         if(returnList.getData().equals(e1.getData()) && !nextNull){
             return substituteA(e1, e2, append(e2, returnList.getNext()));
         } else {
-            // Sollten die Elemente nicht identisch sein, wird die Methode ohne Struktur Veränderungen
+            // Sollten die Elemente nicht identisch sein, wird die Methode ohne Strukturveränderungen
             // erneut rekursiv aufgerufen.
             nextList = substituteA(e1, e2, returnList.getNext());
         }
