@@ -39,6 +39,8 @@ public class Main {
     }
 
     // [halb fixed #2 - Logik broken?]
+
+    // Das gucke ich mir alles in Ruhe nochmal morgen an!
     public boolean suffix(ListenElement s, ListenElement l){
         boolean nextNull = false;
         boolean subTree = false;
@@ -63,6 +65,8 @@ public class Main {
     }
 
     // [halb fixed #2 - Logik broken?]
+
+    // Das gucke ich mir alles in Ruhe nochmal morgen an!
     public boolean infix(ListenElement i, ListenElement l){
         boolean nextNull = false;
         boolean success = false;
