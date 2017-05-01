@@ -29,7 +29,7 @@ public class Main {
     public ListenElement diffList(ListenElement liste1, ListenElement liste2){
         boolean run = true;
 
-        // Die Methode durchläuft alle Elemente der übergebene Liste.
+        // Die Methode durchläuft alle Elemente der übergebenen Liste.
         while(run){
             // Wenn das Ende der Liste erreicht ist, bricht die Schleife am Ende ab
             // und gibt die Ergebnisliste zurück.
