@@ -38,50 +38,78 @@ public class Main {
         return liste1;
     }
 
-    // [halb fixed #2 - Logik broken?]
-
-    // Das gucke ich mir alles in Ruhe nochmal morgen an!
+    // [fixed #2]
     public boolean suffix(ListenElement s, ListenElement l){
-        boolean nextNull = false;
-        boolean subTree = false;
-
-        // Wenn beide Listen die leere Liste aufweisen und davor kein Abbruch des rekursiven Aufrufs statt gefunden hat
-        // ist s ein suffix von l
-        if(s == null && l == null){
-            return true;
+        if(s.getData().equals(l.getData())){
+            return false;
+        } else if(s.getData() == null){
+            return false;
         }
 
-        // Sobald das erste Element aus s, dem aktuellen Element aus l entspricht, wird die
-        // Methode rekursiv erneut aufgerufen. Allerdings diesmal mit dem Nachfolger von s und l.
-        if(l.getData().equals(s.getData())){
-            subTree = suffix(s.getNext(), l.getNext());
-        } else {
-            // Sollte der Fall nicht eintreten, wird die Methode rekursiv mit dem Nachfolger von l aufgerufen
-            suffix(s, l.getNext());
-        }
-
-        // Sollte keiner der oberen Fälle eintreten, ist s kein Suffix von l.
-        return subTree;
+        return suffixsub(s, l.getNext());
     }
 
-    // [halb fixed #2 - Logik broken?]
-
-    // Das gucke ich mir alles in Ruhe nochmal morgen an!
-    public boolean infix(ListenElement i, ListenElement l){
-        boolean nextNull = false;
-        boolean success = false;
-
-        if(i == null){
+    public boolean suffixsub(ListenElement s, ListenElement l){
+        // Sollten die aktuellen Elemente beide null sein, ist s ein suffix von l
+        if(s == null && l == null){
             return true;
+        } else if (s == null){
+            // Sollte hingegen s null sein und l noch nicht, ist s kein suffix von l
+            return false;
+        } else if(l == null){
+            // Sollte das aktuelle Element von l null sein, ist l zu ende, s aber nicht
+            // damit ist s kein suffix von l
+            return false;
+        } else if(s.getData().equals(l.getData())){
+            // sollten aktuellen Elemente, welche überprüft werden identisch sein,
+            // ruft die Methode sich selbst mit den nächsten beiden Elementen wieder auf.
+            return suffixsub(s.getNext(), l.getNext());
         }
 
+        return suffixsub(s, l.getNext());
+    }
+
+    // [fixed #2]
+    public boolean infix(ListenElement i, ListenElement l){
+        // Wenn das erste Element aus i gleich dem ersten Element aus l ist,
+        // gibt die Methode false zurück, da es sich um ein Präfix handelt.
         if(i.getData().equals(l.getData())){
-            success = infix(i.getNext(), l.getNext());
-        } else {
-            infix(i, l.getNext());
+            return false;
+        } else if(i.getData() == null){
+            return false;
         }
 
-        return success;
+        // Danach geht die Methode in ihre 'Suchschleife'
+        return infixsub(i, l.getNext());
+    }
+
+    public boolean infixsub(ListenElement i, ListenElement l){
+        // Sobald das aktuelle Element aus l gleich dem Element aus i ist
+        // geht die Methode eine Rekursionsebene tiefer und vergleich nun jedes
+        // folgende Element aus i mit jedem folgendem Element aus l
+        if(i.getData().equals(l.getData())){
+            return infixsubsub(i.getNext(), l.getNext());
+        }
+
+        return infixsub(i, l.getNext());
+    }
+
+    public boolean infixsubsub(ListenElement i, ListenElement l){
+        // Sollten die Pointer auf die nächsten Elemente bei beiden Elementen
+        // null sein, wäre i ein suffix, dies ist nicht gewünscht und die Methode
+        // würde zu false auswerten.
+        if(i == null && l == null){
+            return false;
+        } else if(i == null){
+            // Ist hingegen das nächste Element von i null, ist i ein infix von l
+            // die Methode wertet zu true aus.
+            return true;
+        } else if(i.getData().equals(l.getData())){
+            // Wenn die aktuellen Elemente identisch sind, fährt die Methode mir ihrem Suchlauf fort.
+            return infixsubsub(i.getNext(), l.getNext());
+        }
+
+        return false;
     }
 
     // [fixed #2]
