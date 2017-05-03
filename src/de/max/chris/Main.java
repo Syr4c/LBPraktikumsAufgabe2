@@ -24,10 +24,16 @@ public class Main {
     public ListenElement diffList(ListenElement liste1, ListenElement liste2){
         boolean nextNull = false;
 
+        // Es wird überprüft, ob die übergebene 2. Liste leer ist,
+        // wenn der Fall eintritt, wird die 1. Liste zurück gegeben.
         if(liste2 == null){
             nextNull = true;
         }
 
+        // Es wird überprüft, ob das aktuelle Element aus liste2 gleich
+        // dem aktuellen Element aus liste1 ist. Sollte dies der Fall sein
+        // wird das Element aus Liste 1 gelöscht. Ansonsten wird die
+        // Methode diffList erneut aufgerufen.
         if(isIn(liste2, liste1)){
             delA(liste2, liste1);
             diffList(liste1, liste2.getNext());
@@ -40,9 +46,15 @@ public class Main {
 
     // [fixed #2]
     public boolean suffix(ListenElement s, ListenElement l){
+        // Sollten die ersten beiden Elemente aus der Liste s und Liste l
+        // identisch sein, wird false zurück gegeben, da s kein Präfix von l
+        // sein darf.
         if(s.getData().equals(l.getData())){
             return false;
         } else if(s.getData() == null){
+            // Sollte die übergebene Liste s leer sein, wird false zurück
+            // gegeben, da eine leere Liste kein Suffix von einer
+            // anderen Liste sein darf.
             return false;
         }
 
@@ -124,13 +136,11 @@ public class Main {
         // Sollte das erste Elemente aus p, gleich dem ersten Element aus l sein, ruft sich die Methode
         // rekursiv wieder auf.
         if(p.getData().equals(l.getData()) && !nextNull) {
-            praefix(p.getNext(), l.getNext());
-        } else {
-            // Sollte dieser Fall nicht eintreten, gibt die Methode false zurück, da p damit kein Präfix von l ist.
-            return false;
+            return praefix(p.getNext(), l.getNext());
         }
 
-        return true;
+        // Sollte dieser Fall nicht eintreten, gibt die Methode false zurück, da p damit kein Präfix von l ist.
+        return false;
     }
 
     // [fixed #2]
@@ -139,7 +149,7 @@ public class Main {
         ArrayList<Integer> returnList = new ArrayList<>();
         returnList.add(0); //even
         returnList.add(0); //odd
-        ListType aktuellerTyp = ListType.EVEN;
+        Integer counter = 1;
 
         // Die übergebene Liste wird Element für Element durchlaufen.
         while(run){
@@ -152,6 +162,7 @@ public class Main {
             if(nextElement == null){
                 run = false;
             } else {
+
                 // Es wird überprüft, ob das aktuelle Elemente eine Liste beinhaltet.
                 Object getData = nextElement.getData();
                 ListenElement dataCast = (ListenElement) getData;
@@ -165,18 +176,14 @@ public class Main {
                     returnList.set(1, (returnList.get(1) + rekursionList.get(1)));
                 }
 
-                // Bei jedem Schleifendurchlauf wechselt der Typ der Liste von Even zu Odd
-                if (aktuellerTyp == ListType.EVEN) {
-                    aktuellerTyp = ListType.ODD;
-                } else {
-                    aktuellerTyp = ListType.EVEN;
-                }
+                // Bei jedem durchlaufenden Element wird die Listenlänge um +1 hochgezählt
+                counter++;
             }
         }
 
-        // Am Ende jeder Listen Iteration wird das jeweilige Ergbnis (ob eine überprüfte Liste gerade oder unngerade ist)
-        // ausgewertet und ein jeweiliger Wert addiert.
-        if(aktuellerTyp == ListType.EVEN){
+        // Sollte die Länge der Liste sich restlos durch 2 teilen lassen, ist die Liste gerade
+        // sollte sie sich nicht restlos durch Zwei teilen lassen ist sie ungerade.
+        if((counter%2) == 0){
             returnList.set(0,(returnList.get(0) + 1));
         } else {
             returnList.set(1,(returnList.get(1) + 1));
